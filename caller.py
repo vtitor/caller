@@ -13,14 +13,16 @@ class property(property):
         if self.fget is None:
             raise AttributeError('unreadable attribute')
 
-        if self.fcall is None:
+        if self.fcall is None and self.fset is None:
             return self.fget(obj)
+
+        fcall = self.fcall or self.fset
 
         value = self.fget(obj)
         callable_value = type(
             'callable_cls',
             (type(value),),
-            {'__call__': types.MethodType(self.fcall, obj)}
+            {'__call__': types.MethodType(fcall, obj)}
         )(value)
 
         return callable_value
