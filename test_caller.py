@@ -3,7 +3,7 @@ from caller import property
 
 class Example(object):
     def __init__(self):
-        self._value = 1
+        self._value = None
 
     @property
     def value(self):
