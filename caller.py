@@ -16,15 +16,16 @@ class property(property):
         if self.fcall is None and self.fset is None:
             return self.fget(obj)
 
-        fcall = self.fcall or self.fset
-
         value = self.fget(obj)
-        callable_value = type(
-            'callable_cls',
-            (type(value),),
-            {'__call__': types.MethodType(fcall, obj)}
-        )(value)
+        fcall = types.MethodType(self.fcall or self.fset, obj)
 
+        if hasattr(value, '__call__'):
+            value.__call__ = fcall
+            return value
+
+        callable_value = type(
+            'Callable', (type(value),), {'__call__': fcall}
+        )(value)
         return callable_value
 
     def getter(self, fget):
