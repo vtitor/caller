@@ -23,10 +23,8 @@ class property(property):
             value.__call__ = fcall
             return value
 
-        callable_value = type(
-            'Callable', (type(value),), {'__call__': fcall}
-        )(value)
-        return callable_value
+        _type = Bool if type(value) is types.BooleanType else type(value)
+        return type('Callable', (_type,), {'__call__': fcall})(value)
 
     def getter(self, fget):
         return type(self)(fget, self.fset, self.fdel, self.fcall, self.__doc__)
@@ -39,3 +37,15 @@ class property(property):
 
     def caller(self, fcall):
         return type(self)(self.fget, self.fset, self.fdel, fcall, self.__doc__)
+
+
+class Bool:
+    def __init__(self, value):
+        if not isinstance(value, bool):
+            raise ValueError
+        self.value = value
+
+    def __bool__(self):
+        return self.value
+
+    __nonzero__ = __bool__
