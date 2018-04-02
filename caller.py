@@ -39,7 +39,7 @@ class property(property):
         return type(self)(self.fget, self.fset, self.fdel, fcall, self.__doc__)
 
 
-class Bool:
+class Bool(object):
     def __init__(self, value):
         if not isinstance(value, bool):
             raise ValueError
