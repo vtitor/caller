@@ -23,8 +23,11 @@ class property(property):
             value.__call__ = fcall
             return value
 
-        _type = Bool if type(value) is types.BooleanType else type(value)
-        return type('Callable', (_type,), {'__call__': fcall})(value)
+        _type = Bool if type(value) is bool else type(value)
+        return type('Callable', (_type,), {
+            '__call__': fcall,
+            '__reduce__': lambda _: (_type, (value,)),
+        })(value)
 
     def getter(self, fget):
         return type(self)(fget, self.fset, self.fdel, self.fcall, self.__doc__)
