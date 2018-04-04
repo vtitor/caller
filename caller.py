@@ -19,10 +19,6 @@ class property(property):
         value = self.fget(obj)
         fcall = types.MethodType(self.fcall or self.fset, obj)
 
-        if hasattr(value, '__call__'):
-            value.__call__ = fcall
-            return value
-
         _type = _Bool if type(value) is bool else type(value)
         return type('Callable', (_type, _Callable), {
             '__call__': fcall, '__cast__': _type,
