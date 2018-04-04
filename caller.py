@@ -23,12 +23,21 @@ class property(property):
             value.__call__ = fcall
             return value
 
-        _type = Bool if type(value) is bool else type(value)
-        return type('Callable', (_type,), {
-            '__call__': fcall,
+        _type = _Bool if type(value) is bool else type(value)
+        return type('Callable', (_type, _Callable), {
+            '__call__': fcall, '__cast__': _type,
             '__iadd__': lambda _, other: value + other,
-            '__reduce__': lambda _: (_type, (value,)),
+            '__reduce__': lambda _: (_type, (value,))
         })(value)
+
+    def __set__(self, obj, value):
+        if self.fset is None:
+            raise AttributeError("can't set attribute")
+
+        if isinstance(value, _Callable):
+            value = _Callable.resolve(value)
+
+        self.fset(obj, value)
 
     def getter(self, fget):
         return type(self)(fget, self.fset, self.fdel, self.fcall, self.__doc__)
@@ -43,7 +52,15 @@ class property(property):
         return type(self)(self.fget, self.fset, self.fdel, fcall, self.__doc__)
 
 
-class Bool(object):
+class _Callable:
+    @staticmethod
+    def resolve(value):
+        while isinstance(value, _Callable):
+            value = value.__cast__(value)
+        return value
+
+
+class _Bool(object):
     def __init__(self, value):
         if not isinstance(value, bool):
             raise ValueError
