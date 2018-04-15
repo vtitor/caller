@@ -22,6 +22,7 @@ class property(property):
         _type = _Bool if type(value) is bool else type(value)
         return type('Callable', (_type, _Callable), {
             '__call__': fcall, '__cast__': _type,
+            '__iadd__': lambda _, other: value + other,
             '__reduce__': lambda _: (_type, (value,))
         })(value)
 
