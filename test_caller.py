@@ -18,10 +18,12 @@ class Example(object):
 
 
 def test_property():
-    example = Example(1)
-    assert example.value == 1
-    example.value += 7
-    assert example.value == 8
+    example = Example([1])
+    assert example.value == [1]
+    example.value.extend([7])
+    example.value += [7]
+    example.value.pop()
+    assert example.value == [1, 7]
     example.value(548)
     assert example.value == 548
 
