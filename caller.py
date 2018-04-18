@@ -1,6 +1,25 @@
 import types
 
 
+def make_callable(value, call):
+    value_type = type(value)
+    cls_name = 'Callable{cls}'.format(cls=value_type.__name__.capitalize())
+    bases = _Bool if value_type is bool else value_type,
+    attributes = {
+        '__call__': call, '__class__': value_type,
+        '__iadd__': lambda _, other: value + other
+    }
+    callable_type = type(cls_name, bases, attributes)
+    callable_value = callable_type(value)
+    for attr_name in dir(value):
+        try:
+            if attr_name not in attributes:
+                setattr(callable_value, attr_name, getattr(value, attr_name))
+        except AttributeError:
+            pass
+    return callable_value
+
+
 class property(property):
     def __init__(self, fget=None, fset=None, fdel=None, fcall=None, doc=None):
         super(property, self).__init__(fget, fset, fdel, doc)
@@ -19,21 +38,7 @@ class property(property):
         value = self.fget(obj)
         fcall = types.MethodType(self.fcall or self.fset, obj)
 
-        _type = _Bool if type(value) is bool else type(value)
-        return type('Callable', (_type, _Callable), {
-            '__call__': fcall, '__cast__': _type,
-            '__iadd__': lambda _, other: value + other,
-            '__reduce__': lambda _: (_type, (value,))
-        })(value)
-
-    def __set__(self, obj, value):
-        if self.fset is None:
-            raise AttributeError("can't set attribute")
-
-        if isinstance(value, _Callable):
-            value = _Callable.resolve(value)
-
-        self.fset(obj, value)
+        return make_callable(value, fcall)
 
     def getter(self, fget):
         return type(self)(fget, self.fset, self.fdel, self.fcall, self.__doc__)
@@ -46,14 +51,6 @@ class property(property):
 
     def caller(self, fcall):
         return type(self)(self.fget, self.fset, self.fdel, fcall, self.__doc__)
-
-
-class _Callable:
-    @staticmethod
-    def resolve(value):
-        while isinstance(value, _Callable):
-            value = value.__cast__(value)
-        return value
 
 
 class _Bool(object):
