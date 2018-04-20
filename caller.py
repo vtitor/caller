@@ -1,3 +1,4 @@
+import pickle
 import types
 
 
@@ -10,6 +11,11 @@ def make_callable(value, call):
         '__iadd__': lambda _, other: value + other
     }
     callable_type = type(cls_name, bases, attributes)
+    try:
+        reduce = pickle.Pickler.dispatch[value_type]
+        pickle.Pickler.dispatch[callable_type] = reduce
+    except (AttributeError, KeyError):
+        pass
     callable_value = callable_type(value)
     for attr_name in dir(value):
         try:
