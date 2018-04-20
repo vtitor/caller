@@ -29,9 +29,9 @@ def test_property():
 
 
 def test_pickle():
-    example = {Example(5).value: 8}
+    example = Example({Example(5).value: 8})
     pickled_example = pickle.dumps(example)
-    assert pickle.loads(pickled_example) == {5: 8}
+    assert pickle.loads(pickled_example).value == {5: 8}
 
 
 def test_deepcopy():
