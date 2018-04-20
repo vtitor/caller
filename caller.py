@@ -3,7 +3,10 @@ import types
 
 
 def make_callable(value, call):
-    value_type = type(value)
+    try:
+        value_type = value.__class__
+    except AttributeError:
+        value_type = type(value)
     cls_name = 'Callable{cls}'.format(cls=value_type.__name__.capitalize())
     bases = _Bool if value_type is bool else value_type,
     attributes = {
