@@ -30,7 +30,7 @@ class Foo(object):
 foo = Foo('bar')
 foo.bar('new bar')
 
-print foo.bar
+print(foo.bar)
 ```
 
 Prints
@@ -47,10 +47,9 @@ class Foo(object):
     @bar.caller
     def bar(self, new_bar):
         self._bar = new_bar[::-1]
-        print self._bar
+        print(self._bar)
 
-foo = Foo('bar')
-foo.bar('new bar')
+Foo('bar').bar('new bar')
 ```
 
 Prints
