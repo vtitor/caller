@@ -1,6 +1,8 @@
 import pickle
 import types
 
+cache = {}
+
 
 def call(obj, *args, **kwargs):
     return obj.__call__(*args, **kwargs)
@@ -17,12 +19,16 @@ def make_callable(value, func):
         '__call__': call, '__class__': value_type,
         '__iadd__': lambda _, other: value + other
     }
-    callable_type = type(cls_name, bases, attributes)
-    try:
-        reduce = pickle.Pickler.dispatch[value_type]
-        pickle.Pickler.dispatch[callable_type] = reduce
-    except (AttributeError, KeyError):
-        pass
+    if cls_name not in cache:
+        callable_type = type(cls_name, bases, attributes)
+        try:
+            reduce = pickle.Pickler.dispatch[value_type]
+            pickle.Pickler.dispatch[callable_type] = reduce
+        except (AttributeError, KeyError):
+            pass
+        cache[cls_name] = callable_type
+    else:
+        callable_type = cache[cls_name]
     callable_value = callable_type(value)
     callable_value.__call__ = func
     for attr_name in dir(value):
