@@ -2,7 +2,11 @@ import pickle
 import types
 
 
-def make_callable(value, call):
+def call(obj, *args, **kwargs):
+    return obj.__call__(*args, **kwargs)
+
+
+def make_callable(value, func):
     try:
         value_type = value.__class__
     except AttributeError:
@@ -20,6 +24,7 @@ def make_callable(value, call):
     except (AttributeError, KeyError):
         pass
     callable_value = callable_type(value)
+    callable_value.__call__ = func
     for attr_name in dir(value):
         try:
             if attr_name not in attributes:
