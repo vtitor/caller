@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='caller',
-    version='0.0.1',
+    version='0.0.2',
     description='Set a Python property using a function call',
     long_description=long_description,
     long_description_content_type='text/markdown',
