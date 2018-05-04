@@ -1,5 +1,7 @@
 import pickle
 
+from caller.base_types import base_types
+
 
 def call(obj, *args, **kwargs):
     return obj.__call__(*args, **kwargs)
@@ -11,7 +13,7 @@ def make_callable(value, func, cache={}):
     except AttributeError:
         value_type = type(value)
     cls_name = 'Callable{cls}'.format(cls=value_type.__name__.capitalize())
-    bases = _Bool if value_type is bool else value_type,
+    bases = base_types.get(value_type, value_type),
     attributes = {
         '__call__': call, '__class__': value_type,
         '__iadd__': lambda _, other: value + other
@@ -35,15 +37,3 @@ def make_callable(value, func, cache={}):
         except AttributeError:
             pass
     return callable_value
-
-
-class _Bool(object):
-    def __init__(self, value):
-        if not isinstance(value, bool):
-            raise ValueError
-        self.value = value
-
-    def __bool__(self):
-        return self.value
-
-    __nonzero__ = __bool__
