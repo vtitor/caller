@@ -15,7 +15,7 @@ class property(property):
             return self
 
         if self.fget is None:
-            raise AttributeError('unreadable attribute')
+            raise AttributeError("unreadable attribute")
 
         if self.fcall is None and self.fset is None:
             return self.fget(obj)

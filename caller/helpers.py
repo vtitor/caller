@@ -12,11 +12,12 @@ def make_callable(value, func, cache={}):
         value_type = value.__class__
     except AttributeError:
         value_type = type(value)
-    cls_name = 'Callable{cls}'.format(cls=value_type.__name__.capitalize())
-    bases = base_types.get(value_type, value_type),
+    cls_name = "Callable{cls}".format(cls=value_type.__name__.capitalize())
+    bases = (base_types.get(value_type, value_type),)
     attributes = {
-        '__call__': call, '__class__': value_type,
-        '__iadd__': lambda _, other: value + other
+        "__call__": call,
+        "__class__": value_type,
+        "__iadd__": lambda _, other: value + other,
     }
     if cls_name not in cache:
         callable_type = type(cls_name, bases, attributes)
