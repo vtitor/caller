@@ -14,6 +14,7 @@ setup(
     url="https://github.com/vtitor/caller",
     packages=["caller"],
     tests_require=["pytest"],
+    extras_require={"dev": ["pre-commit", "black"]},
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 2.7",
