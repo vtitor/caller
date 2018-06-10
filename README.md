@@ -1,5 +1,6 @@
 # caller
 
+[![Build Status](https://travis-ci.org/vtitor/caller.svg?branch=master)](https://travis-ci.org/vtitor/caller)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
 Caller is a little library for calling a property as a regular function.
